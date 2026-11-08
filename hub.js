@@ -23,17 +23,48 @@
     for (let i = others.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [others[i], others[j]] = [others[j], others[i]]; }
     shown = others.slice(0, 3);
   }
+  const cardHTML = (c) => `<span class="e" style="background:${esc(c.color)}33">${esc(c.emoji)}</span><span><div class="n">${esc(name(c))}</div><div class="g">${esc(lang === 'zh' ? c.tagZh : c.tagEn)}</div></span><span class="b">${esc(t('go'))}</span>`;
+  let spinId = 0;
   function render() {
+    spinId++; // a re-render cancels any flips still running
     document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
     root.setAttribute('aria-label', t('title'));
     root.innerHTML = `<div class="box"><button class="x" type="button" aria-label="${esc(t('close'))}">×</button><h2>${esc(t('title'))}</h2><p class="s">${esc(t('sub'))}</p>` +
-      (shown.length ? shown.map((c) => `<button class="c" type="button" data-id="${esc(c.id)}"><span class="e" style="background:${esc(c.color)}33">${esc(c.emoji)}</span><span><div class="n">${esc(name(c))}</div><div class="g">${esc(lang === 'zh' ? c.tagZh : c.tagEn)}</div></span><span class="b">${esc(t('go'))}</span></button>`).join('') : `<p class="s">${esc(t('none'))}</p>`) +
+      (shown.length ? shown.map((c) => `<button class="c" type="button" data-id="${esc(c.id)}">${cardHTML(c)}</button>`).join('') : `<p class="s">${esc(t('none'))}</p>`) +
       (total > shown.length ? `<p class="hint">${esc(t('hint'))}</p>` : '') + '</div>';
+  }
+  // Each card flips a few times, landing on a random city each time, then settles on its final one.
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  async function flipCard(el, final, pool, id, idx) {
+    const flips = 3 + Math.floor(Math.random() * 4); // 3 to 6
+    { const o = pool.filter((c) => c !== final); if (o.length) { const f0 = o[Math.floor(Math.random() * o.length)]; el.dataset.id = f0.id; el.innerHTML = cardHTML(f0); } } // don't spoil the answer
+    await sleep(idx * 140 + Math.random() * 120);
+    let prev = null;
+    el.classList.add('spin');
+    for (let k = 0; k < flips; k++) {
+      if (id !== spinId) return;
+      let face;
+      if (k === flips - 1) face = final;
+      else { const opts = pool.filter((c) => c !== prev && c !== final); face = opts.length ? opts[Math.floor(Math.random() * opts.length)] : final; }
+      prev = face;
+      const half = 85 + k * 22; // the flips slow down like a slot machine
+      await el.animate([{ transform: 'perspective(700px) rotateX(0deg)' }, { transform: 'perspective(700px) rotateX(90deg)' }], { duration: half, easing: 'ease-in' }).finished.catch(() => {});
+      if (id !== spinId) return;
+      el.dataset.id = face.id; el.innerHTML = cardHTML(face);
+      await el.animate([{ transform: 'perspective(700px) rotateX(-90deg)' }, { transform: 'perspective(700px) rotateX(0deg)' }], { duration: half, easing: 'ease-out' }).finished.catch(() => {});
+    }
+    if (id === spinId) { el.classList.remove('spin'); if (idx === 0 && document.activeElement === document.body) el.focus(); }
+  }
+  function spin() {
+    if (reduceMotion || cities.length < 2) return;
+    const pool = cities.filter((c) => c.id !== here); const id = spinId;
+    root.querySelectorAll('.c').forEach((el, i) => { el.classList.add('spin'); flipCard(el, shown[i], pool, id, i); });
   }
   function show() {
     if (!loaded) { wantOpen = true; return; }
-    reshuffle(); render(); root.classList.add('show');
-    const f = root.querySelector('.c'); if (f) f.focus();
+    reshuffle(); render(); root.classList.add('show'); spin();
+    const f = root.querySelector('.c'); if (f) f.focus({ preventScroll: true });
   }
   function close() {
     if (embedded) { root.classList.remove('show'); window.parent.postMessage({ type: 'teleport:close' }, '*'); }
