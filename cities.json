@@ -1,0 +1,10 @@
+{
+  "cities": [
+    { "id": "xian", "emoji": "🏯", "color": "#e8503a", "url": "https://ruanhoo.github.io/xian/city/",
+      "en": "Xi'an", "zh": "西安", "tagEn": "Walled city · Terracotta Army · hand-pulled noodles", "tagZh": "古城墙 · 兵马俑 · 面食小吃" },
+    { "id": "vancouver", "emoji": "🍁", "color": "#3a8fc7", "url": "https://ruanhoo.github.io/vancouver/living/",
+      "en": "Vancouver", "zh": "温哥华", "tagEn": "Mountains + sea · Sea-to-Sky · Rocky Mountaineer", "tagZh": "山与海 · 海天公路 · 落基山登山者号" },
+    { "id": "maldives", "emoji": "🏝️", "color": "#2ec4a6", "url": "https://ruanhoo.github.io/maldives/island/",
+      "en": "Maldives", "zh": "马尔代夫", "tagEn": "Atolls · overwater villas · manta rays & whale sharks", "tagZh": "环礁 · 水上屋 · 蝠鲼与鲸鲨" }
+  ]
+}

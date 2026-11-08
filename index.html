@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Teleport · pick a city</title>
+  <meta name="description" content="A portal between the cartoon city maps. Three random destinations every time.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%80%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --font: 'Fredoka', ui-rounded, 'Yuanti SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif; --paper: #fffdf6; }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: transparent; font-family: var(--font); color: #2d2a32; -webkit-text-size-adjust: 100%; }
+    body.solo { background: conic-gradient(from 0deg at 50% 50%, #7b5cff, #2fd3ff, #ff9ebb, #ffc93c, #7b5cff); }
+    button { font: inherit; color: inherit; }
+    :focus-visible { outline: 4px solid #7ccbf5; outline-offset: 2px; }
+    #tele { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(45, 42, 50, .45); padding: 16px; }
+    body.solo #tele { background: rgba(45, 42, 50, .25); }
+    #tele.show { display: flex; }
+    #tele .box { width: min(520px, 100%); max-height: 100%; overflow: auto; background: var(--paper); border: 3px solid #2d2a32; border-radius: 24px; box-shadow: 5px 5px 0 #2d2a32; padding: 16px 16px 18px; }
+    #tele h2 { margin: 0 0 2px; font-size: 22px; }
+    #tele .s { margin: 0 0 12px; color: #7a7280; font-size: 14px; }
+    #tele .x { float: right; border: 3px solid #2d2a32; background: #fff; border-radius: 50%; width: 34px; height: 34px; font: 700 18px/1 var(--font); cursor: pointer; box-shadow: 2px 2px 0 #2d2a32; }
+    #tele .c { display: flex; gap: 12px; align-items: center; width: 100%; text-align: left; margin: 0 0 10px; padding: 10px 12px; border: 3px solid #2d2a32; border-radius: 18px; background: #fff; box-shadow: 3px 3px 0 #2d2a32; font: inherit; color: inherit; cursor: pointer; }
+    #tele .c:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #2d2a32; }
+    #tele .e { flex: none; width: 56px; height: 56px; border: 3px solid #2d2a32; border-radius: 16px; display: grid; place-items: center; font-size: 30px; }
+    #tele .n { font-weight: 700; font-size: 18px; }
+    #tele .g { font-size: 13px; color: #7a7280; }
+    #tele .b { margin-left: auto; flex: none; font-weight: 700; font-size: 13px; padding: 6px 10px; border: 3px solid #2d2a32; border-radius: 999px; background: #ffc93c; }
+    #tele .hint { margin: 4px 2px 0; text-align: center; font-size: 12.5px; color: #7a7280; }
+  </style>
+</head>
+<body>
+  <div id="tele" role="dialog" aria-modal="true"></div>
+  <script src="hub.js"></script>
+</body>
+</html>
